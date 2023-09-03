@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "name": "bornoback",
+    "name": "admin-backend",
     "builds": [
         {
             "src": "index.js",
