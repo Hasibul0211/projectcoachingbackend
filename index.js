@@ -38,7 +38,7 @@ async function run() {
 
         })
 
-        app.get('/addStudent', async (req, res) => {
+        app.get('/getAddStudent', async (req, res) => {
             const getStuDbData = await studentCollection.find().toArray()
             res.send(getStuDbData);
         })
