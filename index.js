@@ -1,4 +1,5 @@
 const express = require('express')
+const ObjectId = require('mongodb').ObjectId
 require('dotenv').config()
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const port = process.env.PORT || 5000
@@ -27,9 +28,15 @@ async function run() {
         await client.connect();
         const databaseName = client.db('bornomanagement')
         const studentCollection = databaseName.collection('addStudent')
+        const debitcredit = databaseName.collection('debitcredit')
+        const teacherCollection = databaseName.collection('addTeacher')
+        const teacherPayment = databaseName.collection('listTeachePayment')
         // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
+
+
+        // student details section here 
 
         app.post('/addStudent', async (req, res) => {
             const getStudData = req.body;
@@ -44,8 +51,56 @@ async function run() {
         })
 
 
+        app.post('/debitcredit', async (req, res) => {
+            const dt = req.body;
+            const postdebitcreditdb = await debitcredit.insertOne(dt);
+            res.json(postdebitcreditdb)
+        })
+        app.get('/debitcredit', async (req, res) => {
+            const getdebitcreditdt = await debitcredit.find().toArray()
+            res.send(getdebitcreditdt)
+        })
 
 
+        app.post('/addTeacher', async (req, res) => {
+            const adtd = req.body;
+            const postTeacherData = await teacherCollection.insertOne(adtd);
+            res.json(postTeacherData)
+
+        })
+        app.get('/addTeacher', async (req, res) => {
+            const getTeacherdetails = await teacherCollection.find().toArray()
+            res.send(getTeacherdetails)
+        })
+
+        app.delete('/addTeacher/:id', async (req, res) => {
+            const getDeletTeacehId = req.params.id;
+            const deleteTeacehrquery = { _id: new ObjectId(getDeletTeacehId) }
+            const deleteTeacherResult = await teacherCollection.deleteOne(deleteTeacehrquery)
+            res.send(deleteTeacherResult)
+            console.log(getDeletTeacehId);
+        })
+        // teacher payment section 
+
+        app.post('/teacherPayment', async (req, res) => {
+            const teachPayGet = req.body;
+            const postTeacherPayment = await teacherPayment.insertOne(teachPayGet)
+            res.json(postTeacherPayment)
+            console.log(teachPayGet);
+        })
+        app.get('/teacherPayment', async (req, res) => {
+            const getTeacherPayment = await teacherPayment.find().toArray()
+            res.send(getTeacherPayment)
+        })
+
+        app.delete('/teacherPayment/:id', async (req, res) => {
+            const getDeleId = req.params.id
+            const deleteQuery = { _id: new ObjectId(getDeleId) }
+
+            const deleteResult = await teacherPayment.deleteOne(deleteQuery)
+            console.log(deleteResult);
+            res.json(deleteResult)
+        })
 
 
 
